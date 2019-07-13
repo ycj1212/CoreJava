@@ -382,3 +382,51 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         }
         ```
 
+
+    - 5-1-4 상속 계층
+        상속은 클래스의 한층을 가져오는 것을 멈출 필요가 없다.
+        예를 들면, 우리는 Manager을 상속받은 Excutive클래스를 가질 수 있었다.
+        공통 슈퍼클래스를 상속받은 모든 클래스의 컬렉션은 상속 계층?(inheritance hierarchy)라고 불리고, Figure 5.1에서 보여진다.
+        상속 계층에서 특정한 클래스로부터 조상에 이르는 길은 이것의 상속 체인(inheritance chain)이다.
+        
+        ```
+        Figure 5.1  Employee inheritance hierarchy
+
+                    Employee
+             ___________↑______________       
+            |           |              |
+        Manager     Secretary      Programmer
+            ↑
+        Executive
+        ```
+
+        보통 먼 조상클래스로부터 불려받은 한 체인보다 많이 있다. //
+        당신은 Employee를 상속받은 서브클래스 Programmer 또는 Secretary를 형성할 수 있었고, 그들은 Manager클래스와는 관계가 없다.
+        이 과정은 필요한 한 계속될 수 있다.
+
+        ```
+        C++ NOTE : C++에서, 한 클래스는 다중의 슈퍼클래스를 가질 수 있다.
+        자바는 다중 상속을 지원할 수 없다.
+        다중 상속의 기능의 대부분을 회복하는 방법을 위해, 288쪽에 Section 6.1, "인터페이스"를 보자.
+        ```
+
+    - 5-1-5 다형성
+        간단한 규칙은 당신이 상속이 당신의 데이터에 옳은 설계인지 아닌지 결정하는 것을 도울 수 있다.
+        "is-a" 규칙은 서브클래스의 모든 객체가 슈퍼클래스의 객체라는 것을 말한다.
+        예를 들면, 모든 manager은 employee이다.
+        그러므로, 그것은 Employee클래스의 서브클래스가 되는 Manager클래스가 된다.
+        물론, 그 반대는 사실이 아니다 - 모든 employee가 manager는 아니다.
+
+        "is-a" 규칙을 표현하는 또 다른 방법은 substitution principle 이다.
+        그 원칙은 당신은 프로그램이 슈퍼클래스 객체를 상속할 때마다 서브클래스 객체를 사용할 수 있다는 것을 말한다.
+
+        예를 들면, 당신은 서브클래스 객체를 슈퍼클래스 변수에 할당할 수 있다.
+
+        ```
+        Employee e;
+        e = new Employee(...);  // Employee object expected
+        e = new Manager(...);   // OK, Manager can be used as well
+        ```
+
+        자바 프로그래밍 언어에서 객체 변수는 다형성이다.
+        Employee타입의 변수는 Employee타입의 객체 또는 Employee클래스의 어떤 서브클래스의 객체를 참조할 수 있다(Manager, Executive, Secretary).
