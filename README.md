@@ -270,7 +270,7 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         (우리는 이 장에서 나중에 final키워드에 대하여 논의한다.)
         ```
 
-        목록 5.1은 어떻게 salary계산은 Employee(목록 5.2)와 Manager(목록 5.3)객체가 차이가 있는지 보여주는 프로그램을 포함한다.
+        Listing 5.1은 어떻게 salary계산은 Employee(Listing 5.2)와 Manager(Listing 5.3)객체가 차이가 있는지 보여주는 프로그램을 포함한다.
         
         ```
         Listing 5.1     inheritance/ManagerTest.java
@@ -382,4 +382,3 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         }
         ```
 
-        
