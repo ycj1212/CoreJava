@@ -171,5 +171,61 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         
         ```
         C++ 필기 : 자바는 슈퍼클래스 메소드를 호출하기 위해 super키워드를 사용한다.
-        C++에서, 당신은 사용할 것 이다.
+        C++에서, 대신에 당신은 :: 연산자와 함께 슈퍼클래스의 이름을 사용할 것이다.
+        예를 들면, Manager클래스의 getSalary메소드는 super.getSalary 대신에 Employee::getSalary를 호출할 것이다.
         ```
+
+    - 5-1-3 서브클래스 생성자
+        우리의 예시를 완료하는 것은, 생성자를 제공하라고 시킨다.
+        
+        ```
+        public Manager(String name, double salary, int year, int month, int day)
+        {
+            super(name, salary, year, month, day);
+            bonus = 0;
+        }
+        ```
+        
+        여기, super키워드는 다른 의미를 가지고 있다.
+        이 지시
+        `super(n, s, year, month, day);`
+        는 "Employee슈퍼클래스의 생성자를 n, s, year, month, day와 같은 매개변수와 함께 호출해라" 의 약칭이다.
+        Manager생성자가 Employee클래스의 private필드에 접근할 수 없을 때 부터, 생성자를 통해 그들을 초기화 해야한다.
+        생성자는 특별한 super문법에서 호출된다.
+        super을 사용하는 호출은 서브클래스의 생성자에서 첫 문장이 되어야한다.
+        만약 서브클래스 생성자가 슈퍼클래스 생성자를 명확하게 호출하지 않는다면, 슈퍼클래스의 no-argument생성자가 호출된다.
+        만약 슈퍼클래스가 no-argument생성자를 가지고 있지 않다면 그리고 서브클래스 생성자가 또 다른 슈퍼클래스 생성자를 명확하게 호출하지 않는다면, 자바 컴파일러는 에러를 제출한다.
+
+        ```
+        필기 : this 키워드가 두가지 의미를 가지고 있다는 것을 회상해라 : 명백한 매개변수의 참조를 의미하는 것과 같은 클래스의 또 다른 생성자를 호출하는 것.
+        마찬가지로, super키워드는 두가지 의미를 가진다 : 슈퍼클래스 메소드를 호출하는 것과 슈퍼클래스 생성자를 호출하는 것.
+        생성자를 호출하곤 했을 때, this와 super키워드는 면밀히 관련이 있다.
+        생성자 호출은 오직 또 다른 생성자에서 첫 문장으로서 발생할 수 있다.
+        생성자 매개변수는 같은 클래스(this)나 슈퍼클래스(super)의 또 다른 생성자를 넘겨받는다. 
+        ```
+
+        ```
+        C++ 필기 : C++ 생성자에서, 당신은 super을 호출하지 않지만, 슈퍼클래스 생성자에서 initializer list 문법을 사용한다.
+        C++에서 Manager생성자는 이와 같이 본다.
+            
+            Manager::Manager(String name, double salary, int year, int month, int day)  // c++
+            : Employee(name, salary, year, month, day)
+            {
+                bonus = 0;
+            }
+        ```
+        
+        당신이 Manager객체에 getSalary메소드를 재정의한 후, managers는 자동적으로 그들의 salaries를 더한 bonus를 가지게 될 것이다.
+        작업에서 이런 예시가 있다.
+        우리는 새로운 manager를 만들고, manager의 bonus를 설정한다.
+
+        ```
+        Manager boss = new Manager("Carl Cracker", 80000, 1987, 12, 15);
+        boss.setBonus(5000);
+        ```
+
+        우리는 세 개의 employee의 배열을 만든다. 
+
+        `Employee[] staff = new Employee[3];`
+
+        
