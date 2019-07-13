@@ -228,4 +228,158 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
 
         `Employee[] staff = new Employee[3];`
 
+        우리는 managers와 employees의 혼합물과 함께 배열에 이주시킨다.
+        
+        ```
+        staff[0] = boss;
+        staff[1] = new Employee("Harry Hacker", 50000, 1989, 10, 1);
+        staff[2] = new Employee("Tony Tester", 40000, 1990, 3, 15);
+        ```
+
+        우리는 모두의 salary를 출력한다.
+
+        ```
+        for(Employee e : staff)
+            System.out.println(e.getName() + " " + e.getSalary());
+        ```
+
+        이 루프는 다음의 정보를 출력한다.
+
+        ```
+        Carl Cracker 85000.0
+        Harry Hacker 50000.0
+        Tommy Tester 40000.0
+        ```
+
+        이제 staff[1]과 staff[2]는 그들이 Employee객체이기 때문에 각각 그들의 base salary를 출력한다.
+        그러나, staff[0]은 Manager객체이다. Manager객체의 getSalary메소드는 bonus를 base salary에 더한다.
+        주목할만한 것은 호출 `e.getSalary()` 이(가) 옳은 getSalary메소드를 알아낸다.
+        e의 선언된 타입은 Employee 임에 주목해라. 그러나, e가 나타내는 객체의 실제 타입은 Employee 또는 Manager가 될 수 있다.
+        
+        e가 Employee객체를 나타낼 때, e.getSalary()는 Employee클래스의 getSalary메소드를 호출한다.
+        그러나, e가 Manager객체를 나타낼 때, Manager클래스의 getSalary메소드가 호출된다.
+        가상머신은 e가 나타내는 객체의 실제 타입에 대해서 알고, 그러므로 옳은 메소드를 호출할 수 있다.
+        
+        (변수 e와 같은)객체 변수가 다중의 실제 타입을 참조할 수 있다는 사실은 **다형성**이라 불린다.
+        실행 시에 자동적으로 적절한 메소드를 선택하는 것은 **동적결합(동적바인딩)**이라고 불린다.
+        우리는 이 장에서 두 주제를 좀 더 자세하게 논의한다.
+
+        ```
+        C++ 필기 : C++에서, 만약 당신이 동적 바인딩을 원한다면, 당신은 virtual로서 member function을 선언하는 것을 필요로 한다.
+        자바에서, 동적 바인딩은 default 행동이다; 만약 당신이 가상의 메소드를 원하지 않는다면, 당신은 final을 태그한다.
+        (우리는 이 장에서 나중에 final키워드에 대하여 논의한다.)
+        ```
+
+        목록 5.1은 어떻게 salary계산은 Employee(목록 5.2)와 Manager(목록 5.3)객체가 차이가 있는지 보여주는 프로그램을 포함한다.
+        
+        ```
+        Listing 5.1     inheritance/ManagerTest.java
+
+        package inheritance;
+
+        /**
+         * This program demonstrates inheritance.
+         * @version 1.21 2004-02-21
+         * @author Cay Horstmann
+         */
+        public class ManagerTest
+        {
+            public static void main(String[] args)
+            {
+                // construct a Manager object
+                Manager boss = new Manager("Carl Cracker", 80000, 1987, 12, 15);
+                boss.setBonus(5000);
+
+                Employee[] staff = new Employee[3];
+
+                // fill the staff array with Manager and Employee objects
+                staff[0] = boss;
+                staff[1] = new Employee("Harry Hacker", 50000, 1989, 10, 1);
+                staff[2] = new Employee("Tommy Tester", 40000, 1990, 3, 15);
+
+                // print out information about all Employee objects
+                for(Employee e : staff)
+                    System.out.println("name=" + e.getName() + ",salary=" + e.getSalary());
+            }
+        }
+        ```
+
+        ```
+        Listing 5.2     inheritance/Employee.java
+
+        package inheritance;
+
+        import java.time.*;
+
+        public class Employee
+        {
+            private String name;
+            private double salary;
+            private LocalDate hireDay;
+
+            public Employee(String name, double salary, int year, int month, int day)
+            {
+                this.name = name;
+                this.salary = salary;
+                hireDay = LocalDate.of(year, month, day);
+            }
+
+            public String getName()
+            {
+                return name;
+            }
+
+            public double getSalary()
+            {
+                return salary;
+            }
+
+            public LocalDate getHireDay()
+            {
+                return hireDay;
+            }
+
+            public void raiseSalary(double byPercent)
+            {
+                double raise = salary * byPercent / 100;
+                salary += raise;
+            }
+        }
+        ```
+
+        ```
+        Listing 5.3     inheritance/Manager.java
+
+        package inheritance;
+
+        public class Manager extends Employee
+        {
+            private double bonus;
+
+            /**
+             * @param name the employee's name
+             * @param salary the salary
+             * @param year the hire year
+             * @param month the hire month
+             * @param day the hire day
+             */
+            public Manager(String name, double salary, int year, int month, int day)
+            {
+                super(name, salary, year, month, day);
+                bonus = 0;
+            }
+
+            public double getSalary()
+            {
+                double baseSalary = super.getSalary();
+                return baseSalary + bonus;
+            }
+
+            public void setBonus(double b)
+            {
+                bonus = b;
+            }
+        }
+        ```
+
         
