@@ -8,6 +8,7 @@
 상속의 개념은 당신이 존재하는 클래스에 의거하여? 새로운 클래스를 생성할 수 있다.
 너가 존재하는 클래스로부터 상속받을 때, 당신은 그것의 메소드를 재사용하고, 당신은  새로운 메소드와 새로운 환경에서 새로운 클래스에 적용된 필드를 추가할 수 있다.
 이 기술은 자바 프로그래밍에서 필수적이다.
+
 이 장은 또한 reflection(실행중인 프로그램에서 클래스와 그들의 properties에 대하여 더 알아보는 능력)을 포함한다. Reflection은 강력한 특징이나, 확실히 복잡하다.
 reflection이 application프로그래머보다 tool개발자들에게 흥미가 더 큰 이후로, 당신은 아마도 처음 읽었을 때 그 부분을 훑어보고 나중에 다시 볼 수 있을 것이다.
 
@@ -49,9 +50,39 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         extends 키워드는 당신이 existing 클래스에서 파생된 새로운 클래스를 생성한다는 것을 나타낸다.
         existing 클래스는 superclass, base class, parent class 라고 불린다.
         새로운 클래스는 subclass, derived class, child class 라고 불린다.
-        슈퍼클래스와 서브클래스가 자바 프로그래머에 의해 가장 흔히 사용된 용어, 비록 몇몇 프로그래머들이 부모/자식 유사성?유추?을 선호하지만,
+        슈퍼클래스와 서브클래스의 표현?용어?는 자바 프로그래머에 의해 가장 흔히 사용된다, 비록 몇몇 프로그래머들이 부모/자식 유사성?유추?을 선호하지만,
         이것은 또한 "상속" 주제와 함께 병행한다.
 
         Employee 클래스는 슈퍼클래스이다. 그러나, 그것이 서브클래스보다 우월하기 때문에 또는 더 많은 기능을 포함하고 있기 때문은 아니다.
         사실, 그 반대는 사실이다 : 서브클래스는 슈퍼클래스보다 더 많은 기능을 가지고 있다.
         예를 들면, 우리가 Manager클래스 코드의 나머지 부분을 살펴보면 알 수 있듯이, Manager 클래스는 슈퍼클래스 Employee 보다 더 많은 정보를 요약화하고, 더 많은 기능을 가진다.
+
+        ```
+        필기 : 접두사 super와 sub는 이론상으로 컴퓨터 과학과 수학에서 사용되는 집합의 언어로부터 유래한다.
+        모든 employees 집합은 모든 managers 집합을 포함하므로, managers 집합의 superset 이라고 한다.
+        또는, 다르게 말하면, 모든 managers 집합은 모든 employees 집합의 subset 이다.
+        ```
+
+        우리의 Manager 클래스는 bonus를 저장하는 새로운 필드를 가지고 있고, 이것을 설정하는 새로운 메소드를 가지고 있다.
+
+        ```
+        public class Manager extends Employee
+        {
+            private double bonus;
+            ...
+            public void setBonus(double bonus)
+            {
+                this.bonus = bonus;
+            }
+        }
+        ```
+
+        이 메소드와 필드에 대하여 특별한 것이 없다.
+        만약 당신이 Manager 객체를 가지고 있다면, 당신은 간단하게 setBonus 메소드를 적용할 수 있다.
+
+        ```
+        Manager boss = ...;
+        boss.setBonus(5000);
+        ```
+
+        물론, 만약 당신이 Employee 객체를 가지고 있다면, 당신은 setBonus 메소드를 적용할 수 없다. - Employee 클래스에서 정의된 메소드가 아니다.
