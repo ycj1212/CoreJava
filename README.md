@@ -86,3 +86,90 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         ```
 
         물론, 만약 당신이 Employee 객체를 가지고 있다면, 당신은 setBonus 메소드를 적용할 수 없다. - Employee 클래스에서 정의된 메소드가 아니다.
+
+        그러나 당신은 Manager객체의 getName, getHireDay 와 같은 메소드를 사용할 수 있다.
+        비록 이 메소드들이 Manager클래스에서 명확하게 정의되지 않았더라도, Employee 슈퍼클래스로부터 자동적으로 상속받을 수 있다.
+
+        비슷하게, name, salary, hireDay 필드들은 슈퍼클래스로부터 가져온다.
+        모든 Manager 객체가 name, salary, hrieDay, bonus 필드를 가지고 있다.
+
+        상속받은 슈퍼클래스에 의해 서브클래스를 정의할 때, 당신은 오직 서브클래스와 슈퍼클래스 사이의 차이점을 나타내는 것을 필요로 한다.
+        클래스를 설계할 때, 당신은 슈퍼클래스에서 가장 일반적인 메소드를 사용하고, 서브클래스에서 더 전문적인 메소드를 사용한다.
+        //
+        공통의?흔한? 기능을 슈퍼클래스로 옮기는 것에 의해 제외하는 것은 객체지향 프로그래밍에서 흔히 볼 수 있다.
+        슈퍼 클래스로 옮겨서 공통의 기능을 알아내는 것은 객체 지향 프로그래밍에서 흔히 볼 수 있다.
+        //
+
+    - 5-1-2 메소드 오버라이딩
+        슈퍼클래스 메소드의 몇몇은 Manager 서브클래스에 적절하지 않다.
+        특히, getSalary 메소드는 base salary와 bonus의 합계를 반환하여야한다.
+        당신은 슈퍼클래스 메소드를 오버라이드 한 새로운 메소드를 제공하는것을 필요로 한다.
+        
+        ```
+        public class Manager extends Employee
+        {
+            ...
+            public double getSalary()
+            {
+                ...
+            }
+            ...
+        }
+        ```
+
+        당신은 어떻게 이 메소드를 구현할 수 있나요?
+        언뜻 보기에는 간단하게 될 것 같다. - 단지 salary와 bonus 필드의 합계를 반환해라.
+
+        ```
+        public double getSalary()
+        {
+            return salary + bonus;  // won't work
+        }
+        ```
+        
+        하지만, 작동하지 않을 것이다.
+        오직 Employee메소드가 Employee클래스의 private필드에 집적 접근하는 것을 recall해라.
+        이것은 Manager클래스의 getSalary메소드가 salary필드에 직접 접근할 수 없다는 것을 의미한다.
+        만약 Manager메소드가 그들의 private필드에 접근하는 것을 원한다면, 그들은 모든 다른 메소드를 사용하는 것을 해야한다. - public 인터페이스를 사용해라, 이 경우에 있어서 Employee클래스의 public getSalary메소드 // ???
+
+        다시 시도해보자. 당신은 salary 필드에 간단하게 접근하는 것 대신에 getSalary를 호출하는 것을 필요로 한다 :
+        
+        ```
+        public double getSalary()
+        {
+            double baseSalary = getSalary();    // still won't work
+            return baseSalary + bonus;
+        }
+        ```
+        
+        그 문제는 getSalary를 호출하는 것이 간단하게 스스로를 호출한다는 것이다, 왜냐하면 Manager클래스가 getSalary메소드(다시 말해, 그 우리가 구현하고자 하는 메소드)를 가지고 있기 때문이다.
+        그 결과는 같은 메소드를 호출하는 것의 무한한 chain이고, 프로그램 충돌로 이어진다.
+
+        우리는 우리가 current클래스가 아닌, Employee슈퍼클래스의 getSalary메소드 호출을 원하는 것을 나타내는 것을 필요로 한다.
+        당신은 이 목적을 위해 특별한 키워드 super을 사용한다.
+
+        `super.getSalary()`은 Employee클래스의 getSalary메소드를 호출한다.
+        Manager클래스를 위한 getSalary메소드의 옳은 버전이 있다. :
+        
+        ```
+        public double getSalary()
+        {
+            double baseSalary = super.getSalary();
+            return baseSalary + bonus;
+        }
+        ```
+
+        ```
+        필기 : 몇몇의 사람들은 super을 this참조와 비슷하다고 생각한다.
+        그러나 그 유추는 꽤 정확하지 않다 : super은 객체의 참조가 아니다.
+        예를 들면, 당신은 또 다른 object변수에 super값을 할당할 수 없다.
+        대신에, super는 슈퍼클래스 메소드를 불러오는 컴파일러로 향하는 특별한 키워드이다.
+        ```
+
+        당신도 봤었듯이, 서브클래스는 필드를 추가할 수 있고, 메소드를 추가할 수 있거나, 슈퍼클래스의 메소드를 오버라이드 할 수 있다.
+        그러나, 상속은 결코 어느 필드나 메소드를 떠날 수 없다.
+        
+        ```
+        C++ 필기 : 자바는 슈퍼클래스 메소드를 호출하기 위해 super키워드를 사용한다.
+        C++에서, 당신은 사용할 것 이다.
+        ```
