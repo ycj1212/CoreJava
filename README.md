@@ -430,3 +430,75 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
 
         자바 프로그래밍 언어에서 객체 변수는 다형성이다.
         Employee타입의 변수는 Employee타입의 객체 또는 Employee클래스의 어떤 서브클래스의 객체를 참조할 수 있다(Manager, Executive, Secretary).
+
+        우리는 Listing 5.1에서 이 원칙을 이용한다.
+
+        ```
+        Manager boss = new Manager(...);
+        Employee[] staff = new Employee[3];
+        staff[0] = boss;
+        ```
+
+        이 경우에는, staff[0]와 boss의 변수는 같은 객체를 나타낸다.
+        그러나, staff[0]은 컴파일러에 의해 오직 Employee객체로 여겨진다.
+        
+        그것은 당신이 `boss.setBonus(5000); // OK` 호출할 수 있다는 것을 의미한다.
+        그러나 당신은 `staff[0].setBonus(5000); // Error` 호출할 수 없다.
+
+        staff[0]의 선언 타입은 Employee이고, setBonus메소드는 Employee클래스의 메소드가 아니다.
+
+        그러나, 당신은 서브클래스 변수에 슈퍼클래스 참조를 할당할 수 없다.
+        예를 들면, 이 할당을 만드는 것은 합법이 아니다.
+
+        `Manager m = staff[i];  // Error`
+
+        그 이유는 명백하다: 모든 employee가 manager은 아니다.
+        만약 이 할당이 성공하려면, 그리고 m이 manager이 아닌 Employee객체에 참조되려면, m.setBonus(...) 호출이 가능하게 될것이고, runtime error가 발생할 것이다.    //
+        
+        ```
+        be to 용법
+        예정 ~할 예정이다
+        의무 ~해야한다
+        가능 ~할 수 있다
+        운명 ~할 운명이다
+        의도 ~하려면, ~되려면
+        ```
+
+        ```
+        !주의 : 자바에서, 서브클래스 참조 배열은 cast없이 슈퍼클래스 참조 배열을 변환될 수 있다.
+        예를 들면, manager의 이 배열을 고려해라.
+
+            Manager[] managers = new Manager[10];
+        
+        이 배열을 Employee[]배열로 변환하는 것은 합법이다.
+        
+            Employee[] staff = managers;    // OK
+
+        물론, 당신은 생각할지도 모른다.
+        결국에는, 만약 managers[i]가 Manager이라면, 또한 Employee이다.
+        그러나 실제로, 놀라운 어떤 것은 진행 중이다.
+        managers와 staff가 같은 배열 참조라는 점을 명심해라
+
+            staff[0] = new Employee("Harry Hacker", ...);
+
+        컴파일러는 기꺼이 이 할당을 허락할 것이다.
+        그러나 staff[0]와 managers[0]은 같은 참조여서, 마치 우리가 단지 employee가 management ranks를 밀수하는것을 managed 한 것 처럼 보인다.
+        저것은 매우 나쁘다 - managers[0].setBonus(1000)을 호출하는 것은 존재하지 않는 instance field에 접근하는 것을 시도할 것이고, 이웃 메모리를 손상시킬 것이다.
+        이러한 손상을 발생하지 않도록, 모든 배열은 그들이 생성했던 그 요소 타입을 기억하고, 그들은 오직 호환 가능한 참조가 그들에 저장된다는 것을 감시한다.
+        예를 들면, new Manager[10]으로 생성된 그 배열은 그것이 managers의 배열이라는 것을 기억한다.
+        Employee참조를 저장하는 것을 시도하는 것은 ArrayStoreException을 야기한다.
+        ```
+
+    - 5-1-6 메소드 호출 이해
+        어떻게 메소드 호출이 객체에 적용되는지 확실하게 이해하는 것은 중요하다.
+        우리가 x.f(args)를 호출한다고 말하고, 그 포함되는 매개변수 x는 C클래스의 객체로 선언된다.
+        결과는 이렇다:
+            1. 컴파일러는 객체와 메소드 이름의 선언된 타입을 본다.
+            같은 이름을 가지고 있지만 다른 매개변수 타입을 가진 다수의 메소드, f, 가 있을지도 모른다는 점을 참고해라.
+            예를 들면, 메소드 f(int)와 f(String)이 있을 수 있다.
+            컴파일러는 C클래스에서 f라 불리는 모든 메소드와 C의 슈퍼클래스에서 f라 불리는 모든 접근 가능한 메소드를 열거한다. (슈퍼클래스의 Private메소드는 접근 불가능하다.)
+            이제 컴파일러는 호출되는 메소드의 모든 가능한 후보자들을 안다.
+            
+            2. 다음, 컴파일러는 메소드 호출에서 공급되는 인수의 타입을 결정한다.
+            만약 f로 호출되는 모든 메소드들 사이에 공급되는 인수에 매개 변수 타입이 가장 매치되는 독특한 메소드가 있다면, 그 메소드는 호출되는 것으로 선정된다.
+            
