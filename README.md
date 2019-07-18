@@ -501,4 +501,74 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
             
             2. 다음, 컴파일러는 메소드 호출에서 공급되는 인수의 타입을 결정한다.
             만약 f로 호출되는 모든 메소드들 사이에 공급되는 인수에 매개 변수 타입이 가장 매치되는 독특한 메소드가 있다면, 그 메소드는 호출되는 것으로 선정된다.
+            이 과정은 overloading resolution 이라고 불린다.
+            예를 들면, x.f("Hello") 호출에서, 컴파일러는 f(String)과 f(int)가 아닌 것을 pick 한다.
+            이 상황은 타입 변환(int 에서 double, Manager 에서 Employee, 기타 등등)때문에 컴플렉스를 가질 수 있다.
+            만약 그 컴파일러가 매개변수와 매치되는 어떤 메소드를 찾을 수 없다면, 또는, 다중의 메소드들이 변환이 적응된 후에도 모두 매치된다면, 그 컴파일러는 오류를 제출한다.
             
+            이제 그 컴파일러는 호출되는 것을 필요로 하는 메소드의 이름과 매개변수 타입을 안다.
+
+            ```
+            NOTE : 메소드의 이름과 매개변수 타입 목록은 메소드의 시그니처로 호출된다는 것을 회상해라.
+            예를 들면, f(int)와 f(String)은 같은 이름이나 다른 시그니처를 가진 두 메소드이다.
+            만약 당신이 슈퍼클래스 메소드로서 같은 시그니처를 가지고 있는 서브클래스에서 메소드를 정의한다면, 당신은 슈퍼클래스 메소드를 오버라이드한다.
+
+            그 반환 타입은 시그니처의 부분이 아니다.
+            그러나, 당신이 메소드를 오버라이드 할 때, 당신은 호환 가능한 반환 타입을 유지하는 것을 필요로 한다.
+            서브클래스는 반환 타입을 오리지널 타입의 서브타입으로 바꿀지도 모른다.
+            예를 들면, Employee클래스가
+                public Employee getBuddy() { ... }
+                메소드를 가지고 있다고 가정해라.
+            manager은 buddy로서 낮은 employee를 가지는 것을 결코 원하지 않을 것이다.
+            Manager 서브클래스는 
+                public Manager getBuddy() { ... } // OK to change return type
+                이 메소드를 오버라이드 할 수 있다는 사실을 반영하면,
+                우리는 두 getBuddy 메소드들이 공변하는 반환 타입을 가지고 있다고 말한다.
+            ```
+
+            3. 만약 메소드가 private, static, final, 또는 생성자라면, 컴파일러는 정확하게 어떤 메소드를 호출할 지 안다.
+            그 final 수식어는 다음 섹션에서 설명된다.
+            이것은 정적 바인딩(static binding)이라 불린다.
+            그렇지 않으면, 그 호출되는 메소드가 암시의 매개변수의 실제 타입에 의존하고, 동적 바인딩은 실행 중에 사용되어야 한다.
+            예를 들면, 그 컴파일러는 동적바인딩과 함께 f(String)를 호출하는 명령어를 생성할 것이다.
+
+            4. 프로그램이 실행하고 메소드를 호출하는 동적바인딩을 사용할 때, 그 가상머신은 x를 참조한 오브젝트의 실제 타입에 적합한 메소드의 버전을 호출하여야 한다.
+            실제 타입이 C의 서브클래스, D라고 말하자.
+            만약 D클래스가 f(String)메소드를 정의한다면, 그 메소드는 호출된다.
+            만약 아니라면, D의 슈퍼클래스는 f(String)메소드와 기타 등을 검색한다.
+
+            메소드가 호출될 때마다 이 탐색을 이행하는 데 시간이 많이 걸린다.
+            그러므로, 가상머신은 모든 메소드 시그니처들과 호출되는 실제 메소드들을 나열한 각 클래스 메소드 테이블을 미리 계산한다.
+            메소드가 실제로 호출될 때, 그 가상머신은 간단하게 표를 탐색한다.
+            예를 들면, 그 가상머신은 D클래스의 메소드 테이블을 찾아보고, f(String)을 호출하는 메소드를 탐색한다.
+            그 메소드는 X가 D의 슈퍼클래스의 일부인 곳에서, D.f(String) 또는 X.f(String)이 될지도 모른다.
+            이 시나리오를 전환하는 한가지가 있다.
+            만약 그 호출이 super.f(param)이라면, 컴파일러는 그 암시의 매개변수의 슈퍼클래스의 메소드 테이블을 찾아본다.
+
+        Listing 5.1에서 e.getSalary()호출에서 이 과정을 자세하게 보자.
+        e의 선언된 타입은 Employee이다.
+        Employee클래스는 메소드 매개변수가 없는 getSalary라 불리는 하나의 메소드를 가지고 있다.
+        그러므로, 이 경우에 있어서, 우리는 오버로딩 해결에 대해서 걱정하지 않는다.
+
+        그 getSalary메소드는 private, static, final이 아니라서, 동적으로 바운드한다.
+        그 가상머신은 Employee와 Manager클래스의 메소드 테이블을 소개한다.
+        Employee 테이블은 Employee클래스에서 정의된 것이라고 보여준다:
+            
+            Employee:
+                getName() -> Employee.getName()
+                getSalary() -> Employee.getSalary()
+                getHireDay() -> Employee.getHireDay()
+                raiseSalary(double) -> Employee.raiseSalary(double)
+
+        실제로, 그것은 전체의 이야기가 아니다 - 당신이 나중에 이 장을 본다면, 그 Employee클래스는 많은 메소드를 상속하는 Object슈퍼클래스 가지고 있다.
+        우리는 이제 Object메소드를 무시한다.
+
+        그 Manager메소드 테이블은 미세하게 다르다.
+        세 개의 메소드는 상속 받고, 한 메소느는 재정의 되고, 한 메소드는 추가된다.
+
+            Manager:
+                getName() -> Employee.getName()
+                getSalary() -> Manager.getSalary()
+                getHireDay() -> Employee.getHireDay()
+                raiseSalary(double) -> Employee.raiseSalary(double)
+                setBonus(double) -> Manager.setBonus(double)
