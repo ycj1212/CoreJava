@@ -759,3 +759,94 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
             }
 
         ```
+
+    - 5-1-9 추상 클래스
+        당신이 상속 계층이 상승함으로써, 클래스는 더 일반적이고 아마 더 추상적이게 된다.
+        적절한 시점에, 그 조상 클래스가 너무 일반적으로 되어 당신은 사용하기를 원하는 인스턴스를 가진 클래스보다 다른 클래스를 위한 기준으로 더 많이 생각하게 된다.
+        예를 들면, Employee클래스 계층의 상속을 고려해라.
+        employee는 person이면서 student이다.
+        Person과 Student를 포함하는 클래스 계층을 상속해라.
+        Figure 5.2 는 이 클래스 사이의 상속 관계를 보여준다.
+        
+        왜 추상적인 개념의 단계가 둘 다 매우 높냐?
+        이름과 같이 모든 사람들이 이해하기 쉬운 몇가지 속성이 있다.
+        student와 employee 둘다 이름을 가지고 있고, 흔한 슈퍼클래스는 getName메소드를 제외하라고 한다. 상속 계층에서 높은 단계로
+
+        이제 또 다른 메소드 getDescription을 추가해보자. 이 메소드의 목적은
+            an employee with a salary of $50,000.00
+            a student majoring in computer science
+        와 같은 사람의 짧은 묘사를 반환하는 것이다.
+
+        ```
+        - Figure 5.2
+
+             Person
+            ____↑____
+           |         |
+        Employee  Student
+        ```
+
+        Employee와 Student클래스의 메소드를 구현하는 것은 쉽다.
+        그러나 Person클래스에서 어떤 정보를 제공할 수 있을까?
+        Person클래스는 person에 대해 이름 이외에 어떤 것도 알지 못한다.
+        물론, 당신은 빈 문자열을 반환하는 Person.getDescription()을 구현할 수 있었다.
+        그러나 더 나은 방법이 있다.
+        만약 당신이 abstract 키워드를 사용한다면, 당신은 메소드를 전혀 구현할 필요가 없다.
+
+            public abstract String getDescription();
+                // no implementation required
+
+        추가적인 명확성을 위해, 하나 이상의 추상 메소드를 가지는 클래스 자체가 추상적이라고 선언되어야 한다.
+
+            public abstract class Person
+            {
+                ...
+                public abstract String getDescription();
+            }
+
+        추상메소드에 더하여, 추상 클래스는 필드와 구체적인 메소드를 가질 수 있다.
+        예를 들면, Person클래스는 사람의 이름을 저장하고 이것을 반환하는 구체적인 메소드를 가진다.
+
+            public abstract class Person
+            {
+                private String name;
+
+                public Person(String name)
+                {
+                    this.name = name;
+                }
+
+                public abstract String getDescription();
+
+                public String getName()
+                {
+                    return name;
+                }
+            }
+
+        ```
+        팁 : 몇몇 프로그래머들은 추상클래스가 구체적인 메소드를 가질 수 있다고 깨닫지 못한다.
+        당신은 항상 흔한 필드와 메소드(추상이거나 아니거나)를 슈퍼클래스(추상이거나 아니거나)로 움직여야 한다.
+        ```
+
+        추상메소드는 서브클래스에서 구현된 메소드를 위해 플레이스 홀더로서 역할을 한다.
+        당신이 추상클래스를 상속할 때, 당신은 두 가지 선택권을 가지고 있다.
+        당신은 몇몇 또는 모든 정의되지 않은 추상메소드를 남길 수 있다; 그러면 당신은 서브클래스를 더 추상적으로? 태그해야 한다.
+        또는 당신은 모든 메소드를 정의할 수 있고, 서브클래스는 더 이상 추상적이지 않다.
+        
+        예를 들면, 우리는 Person클래스를 상속받고 getDescription메소드를 구현한 Student클래스를 정의할 것이다.
+        Student클래스의 메소드는 추상적이 아니여서, 추상클래스로서 선언이 필요로 하지 않는다.
+
+        클래스는 추상메소드를 가지고 있지 않더라도 abstract로서 선언될 수 있다.
+        
+        추상클래스는 인스턴스화 될 수 없다.
+        만약 클래스가 abstract로서 선언된다면, 그것은 생성된 클래스의 객체가 아니다.
+        예를 들면,
+            new Person("Vince Vu")
+        는 오류이다.
+        그러나 당신은 구체적인 서브클래스의 객체를 생성할 수 있다.
+        추상클래스의 object variables를 생성할 수 있다는 것을 명심해라.
+        그러나 각 변수는 추상적이지 않은 서브클래스의 객체를 참조하여야 한다.
+        예를 들면,
+            Person p = new Student("Vince Vu", "Economics");
+        여기 p는 비추상적인 서브클래스 Student의 인스턴스를 참조한 Person 추상적 타입의 변수이다.
