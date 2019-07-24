@@ -850,3 +850,54 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
         예를 들면,
             Person p = new Student("Vince Vu", "Economics");
         여기 p는 비추상적인 서브클래스 Student의 인스턴스를 참조한 Person 추상적 타입의 변수이다.
+
+        ```
+        C++ Note : C++에서, 추상 메소드는 순수 가상 함수(pure virtual function)이라 불리고, trailing=0과 함께 태그된다. 다음과 같이,
+
+        class Person // C++
+        {
+            public:
+                virtual string getDescription() = 0;
+                ...
+        };
+
+        C++ 클래스는 적어도 하나의 순수 가상 함수를 가지고 있다면  추상적이다.
+        C++에서 추상클래스를 의미하는 특별한 키워드가 없다.
+        ```
+
+        구체적인 Person 추상클래스를 상속받은 Student 서브클래스를 정의해라.
+
+            public class Student extends Person
+            {
+                private String major;
+
+                public Student(String name, String major)
+                {
+                    super(name);
+                    this.major = major;
+                }
+
+                public String getDescription()
+                {
+                    return "a student majoring in " + major;
+                }
+            }
+
+        Student 클래스는 getDescription 메소드를 정의한다.
+        그러므로, Student 클래스 안의 모든 메소드는 구체적이고, 그 클래스는 이미 추상클래스가 아니다.
+
+        Listing 5.4에서 보여지는 프로그램은 추상클래스 Person과 두 개의 구체적인 , Employee와 Student 클래스를 정의한다.
+        우리는 employee와 student 객체와 함께 Person 참조의 배열을 채운다:
+
+            Person[] people = new Person[2];
+            people[0] = new Employee(...);
+            people[1] = new Student(...);
+
+        그러면 우리는 이 객체의 이름과 묘사를 출력한다.
+
+            for(Person p : people)
+                System.out.println(p.getName() + ", " + p.getDescription());
+
+        몇몇 사람들은 p.getDescription() 호출에 의해 당혹스러워 한다.
+        이 호출이 정의되지 않은 메소드가 아닌가?
+        변수 p가 Person객체 결코 점조하지 않는다는 것을 명심해라.
