@@ -1057,5 +1057,12 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
 
         ```
         C++ Note : 그것이 일어남으로써, 자바에서 protected특징은 같은 패키지에서 모든 다른 클래스들 뿐만 아니라 모든 서브클래스에서 보일 수 있다.
-        이것은 C++에서 protected의 의미가 미세하게 다르고, Java에서 protected의 개념을 만든다.
+        이것은 C++에서 protected의 의미가 미세하게 다르고, C++보다 덜 안전한 Java에서 protected의 개념을 만든다.
         ```
+
+        여기 시각을 제어하는 자바에서 네 개의 접근 수식어들의 요약이 있다.
+
+        1. private - 오직 클래스에서만 보이는
+        2. public - 전체에서 보이는
+        3. protected - 패키지와 모든 서브클래스에서 보이는
+        4. default - 패키지에서 보이는
