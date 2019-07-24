@@ -900,4 +900,131 @@ reflection이 application프로그래머보다 tool개발자들에게 흥미가 
 
         몇몇 사람들은 p.getDescription() 호출에 의해 당혹스러워 한다.
         이 호출이 정의되지 않은 메소드가 아닌가?
-        변수 p가 Person객체 결코 점조하지 않는다는 것을 명심해라.
+        Person 추상클래스의 객체를 생성하는 것이 불가능하기 떄문에 변수 p가 Person객체 결코 참조하지 않는다는 것을 명심해라.
+        변수 p는 항상 Employee 또는 Student와 같은 구체적인 서브클래스의 객체를 참조한다.
+        
+        당신은 Employee와 Student 서브클래스에서 getDescription메소드를 간단히 정의한, Person 슈퍼클래스로부터 완전히 추상메소드를 생략할수 있었나?
+        만약 당신이 그렇게 했다면, 변수 p에서 getDescription메소드를 호출할 수 없을것이다.
+        컴파일러는 당신이 오직 클래스에서 선언된 메소드를 호출한다는 것을 지지한다.
+
+        추상메소드는 자바 프로그래밍 언어에서 중요한 개념이다.
+        당신은 인터페이스안에서 그들을 가장 흔히 마주칠 것이다.
+        인터페이스에 대한 더 많은 정보를 위해, 6장으로 가라.
+
+        ```
+        Listing 5.4 abstractClasses/PersonTest.java
+
+        package abstractClasses;
+
+        /**
+         * This program demonstrates abstract classes.
+         * @version 1.01 2004-02-21
+         * @author Cay Horstmann
+         */
+        public class PersonTest
+        {
+            public static void main(String[] args)
+            {
+                Person[] people = new Person[2];
+
+                // fill the people array with Student and Employee objects
+                people[0] = new Employee("Harry Hacker", 50000, 1989, 10, 1);
+                people[1] = new Student("Maria Morris", "computer science");
+
+                // print out names and descriptions of all Person objects
+                for(Person p : people)
+                    System.out.println(p.getName() + ", " + p.getDescription());
+            }
+        }
+        ```
+
+        ```
+        Listing 5.5 abstractClasses/Person.java
+
+        package abstractClasses;
+        
+        public abstract class Person
+        {
+            public abstract String getDescription();
+            private String name;
+
+            public Person(String name)
+            {
+                this.name = name;
+            }
+
+            public String getName()
+            {
+                return name;
+            }
+        }
+        ```
+
+        ```
+        Listing 5.6 abstractClasses/Employee.java
+
+        package abstractClasses;
+
+        import java.time.*;
+
+        public class Employee extends Person
+        {
+            private double salary;
+            private LocalDate hireDay;
+
+            public Employee(String name, double salary, int year, int month, int day)
+            {
+                super(name);
+                this.salary;
+                hireDay = LocalDate.of(year, month, day);
+            }
+
+            public double getSalary()
+            {
+                return salary;
+            }
+
+            public LocalDate getHireDay()
+            {
+                return hireDay;
+            }
+
+            public String getDescription()
+            {
+                return String.format("an employee with a salary of $%.2f", salary);
+            }
+
+            public void raiseSalary(double byPercent)
+            {
+                double raise = salary * byPercent / 100;
+                salary += raise;
+            }
+        }
+        ```
+
+        ```
+        Listing 5.7 abstractClasses/Student.java
+
+        package abstractClasses;
+
+        public class Student extends Person
+        {
+            private String major;
+
+            /**
+             * @param name the student's name
+             * @param major the student's major
+             */
+            public Student(String name, String major)
+            {
+                // pass n to superclass constructor
+                super(name);
+                this.major = major;
+            }
+
+            public String getDescription()
+            {
+                return "a student majoring in " + major;
+            }
+        }
+        ```
