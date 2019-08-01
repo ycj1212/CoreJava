@@ -411,17 +411,15 @@ C++ 필기 : C++에서, 한 클래스는 다중의 슈퍼클래스를 가질 수
 다중 상속 기능의 대부분을 회복하는 방법을 위해, 288쪽에 Section 6.1, "인터페이스"를 보자.
 ```
 
----
 #### **5-1-5 다형성**
----
 
 간단한 규칙은 당신이 상속이 당신의 데이터에 옳은 설계인지 아닌지 결정하는 것을 도울 수 있다.
 "is-a" 규칙은 서브클래스의 모든 객체가 슈퍼클래스의 객체라는 것을 말한다.
 예를 들면, 모든 manager은 employee이다.
-그러므로, 그것은 Employee클래스의 서브클래스가 되는 Manager클래스가 된다.
+그러므로, 그것은 Manager클래스가 Employee클래스의 서브클래스가 된다는 말이 된다.
 물론, 그 반대는 사실이 아니다 - 모든 employee가 manager는 아니다.
 
-"is-a" 규칙을 표현하는 또 다른 방법은 substitution principle 이다.
+"is-a" 규칙을 표현하는 또 다른 방법은 치환 원칙(substitution principle)이다.
 그 원칙은 당신은 프로그램이 슈퍼클래스 객체를 상속할 때마다 서브클래스 객체를 사용할 수 있다는 것을 말한다.
 
 예를 들면, 당신은 서브클래스 객체를 슈퍼클래스 변수에 할당할 수 있다.
@@ -433,7 +431,7 @@ e = new Manager(...);   // OK, Manager can be used as well
 ```
 
 자바 프로그래밍 언어에서 객체 변수는 다형성이다.
-Employee타입의 변수는 Employee타입의 객체 또는 Employee클래스의 어떤 서브클래스의 객체를 참조할 수 있다(Manager, Executive, Secretary).
+Employee타입의 변수는 Employee타입의 객체 또는 Employee클래스의 어떤 서브클래스의 객체를 참조할 수 있다(Manager, Executive, Secretary 등).
 
 우리는 Listing 5.1에서 이 원칙을 이용한다.
 
@@ -446,7 +444,7 @@ staff[0] = boss;
 이 경우에는, staff[0]와 boss의 변수는 같은 객체를 나타낸다.
 그러나, staff[0]은 컴파일러에 의해 오직 Employee객체로 여겨진다.
 
-그것은 당신이 `boss.setBonus(5000); // OK` 호출할 수 있다는 것을 의미한다.
+그것은 당신이 `boss.setBonus(5000); // OK` 를 호출할 수 있다는 것을 의미한다.
 그러나 당신은 `staff[0].setBonus(5000); // Error` 호출할 수 없다.
 
 staff[0]의 선언 타입은 Employee이고, setBonus메소드는 Employee클래스의 메소드가 아니다.
@@ -469,7 +467,7 @@ be to 용법
 ```
 
 ```
-!주의 : 자바에서, 서브클래스 참조 배열은 cast없이 슈퍼클래스 참조 배열을 변환될 수 있다.
+!주의 : 자바에서, 서브클래스 참조 배열은 cast없이 슈퍼클래스 참조 배열로 변환될 수 있다.
 예를 들면, manager의 이 배열을 고려해라.
 
     Manager[] managers = new Manager[10];
@@ -481,14 +479,16 @@ be to 용법
 물론, 당신은 생각할지도 모른다.
 결국에는, 만약 managers[i]가 Manager이라면, 또한 Employee이다.
 그러나 실제로, 놀라운 어떤 것은 진행 중이다.
-managers와 staff가 같은 배열 참조라는 점을 명심해라
+managers와 staff가 같은 배열 참조라는 점을 명심해라.
+이제 이 문장을 고려해라.
 
     staff[0] = new Employee("Harry Hacker", ...);
 
 컴파일러는 기꺼이 이 할당을 허락할 것이다.
 그러나 staff[0]와 managers[0]은 같은 참조여서, 마치 우리가 단지 employee가 management ranks를 밀수하는것을 managed 한 것 처럼 보인다.
 저것은 매우 나쁘다 - managers[0].setBonus(1000)을 호출하는 것은 존재하지 않는 instance field에 접근하는 것을 시도할 것이고, 이웃 메모리를 손상시킬 것이다.
-이러한 손상을 발생하지 않도록, 모든 배열은 그들이 생성했던 그 요소 타입을 기억하고, 그들은 오직 호환 가능한 참조가 그들에 저장된다는 것을 감시한다.
+
+이러한 손상을 발생하지 않도록, 모든 배열은 그들이 생성되었던 요소 타입을 기억하고, 그들은 오직 호환 가능한 참조가 그들에 저장된다는 것을 감시한다.
 예를 들면, new Manager[10]으로 생성된 그 배열은 그것이 managers의 배열이라는 것을 기억한다.
 Employee참조를 저장하는 것을 시도하는 것은 ArrayStoreException을 야기한다.
 ```
