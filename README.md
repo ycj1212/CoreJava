@@ -737,31 +737,32 @@ x instanceof C
 null은 어떤 객체를 참조하지 않아서, 분명히 타입C의 객체를 참조하지 않는다.
 ```
 
---여기할차례--
 실제로, 캐스트에 의해 객체의 타입을 변환하는 것은 일반적으로 좋은 생각이 아니다.
-이 예제에서 당신은 대부분의 목적을 위해 Manager객체에서 Employee객체를 캐스트할 필요가 없다.
+이 예제에서 당신은 대부분의 목적을 위해 Employee객체를 Manager객체에 캐스트할 필요가 없다.
 getSalary메소드는 두 개의 클래스의 두 객체에서 올바르게 작동할 것이다.
 다형성을 만드는 동적바인딩은 자동으로 올바른 메소드를 위치시킨다.
+
 캐스트를 만드는 이유는 setBonus와 같은 managers에서 독특한 메소드를 사용하는 것이다.
 만약 어떤 이유로 당신이 Employee객체에서 setBonus를 호출하는 것을 원한다면, 이것이 슈퍼클래스에서 설계 결함을 나타내는 것인지 자문해라.
 슈퍼클래스와 재설계하고 setBonus메소드를 추가하는 것이 이해하기 쉬울지도 모른다.
-당신의 프로그램을 종료하려면 ClassCastException 이 하나만 필요하다는 것을 기억해라.
+당신의 프로그램을 종료하려면 잡히지 않은 ClassCastException 하나만 필요하다는 것을 기억해라.
 보통, 캐스트와 instanceof연산자의 사용을 최소화하는것이 최선이다.
 
 ```
 C++ 필기:
-자바에서 C의 "bad old days"로 부터 캐스트 문법을 사용하지만, C++의 dynamic_cast연산자와 같이 작동한다.
+자바에서 C의 "bad old days"로 부터 캐스트 문법을 사용하지만, C++의 안전한 dynamic_cast 연산자와 같이 작동한다.
 예를 들면,
     Manager boss = (Manager) staff[1]; // Java
 는 한가지 중요한 차이를 가지고
     Manager* boss = dynamic_cast<Manager*>(staff[1]); // C++
 와 같다.
-만약 캐스트가 실패한다면, null객체를 넘겨주는게 아니라 예외를 던진다.
-이런 의미에서, C++  references의 캐스트와 같다.
-이것을 골칫거리이다.
+만약 캐스트가 실패한다면, null 객체를 넘겨주는게 아니라 예외를 던진다.
+이런 의미에서, references의 C++ 캐스트와 같다.
+이것은 골칫거리이다.
 C++에서, 당신은 한 연산자에서 타입 테스트와 타입 변환을 처리할 수 있다.
     Manager* boss = dynamic_cast<Manager*>(staff[1]); // C++
     if(boss != NULL) ...
+
 자바에서, 당신은 instanceof연산자와 캐스트의 결합을 사용하는 것을 필요로한다.
     if(staff[1] instanceof Manager)
     {
