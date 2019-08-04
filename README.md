@@ -1087,3 +1087,104 @@ C++ 필기 : 그것이 일어남으로써, 자바에서 protected특징은 같�
 3. protected - 패키지와 모든 서브클래스에서 보이는
 4. package(=default) - 패키지에서 보이는
 
+### **5-2 Object:The Cosmic Superclass**
+
+Objcet 클래스는 궁국의 조상 - 자바에서 모든클래스는 Object를 상속받는다.
+그러나, 당신은 결코 작성하지 말아야 한다
+
+`public class Employee extends Object`
+
+궁극적인 슈퍼클래스 Object는 만약 슈퍼클래스가 명백히 선언되지 않는다면 당연히 여겨진다.
+자바에서 모든 클래스가 Object를 상속받은 이후로, Object클래스에 의해 제공되는 서비스와 익숙하게 되는 것이 중요하다.
+이 장에서, 우리는 기초적인 한가지를 검토한다; 뒷 장을 검토하거나 여기를 포함하지 않는 온라인 문서를 봐라. (몇몇 오브젝트의 메소드는 concurrency를 다룰 때 나온다 - 스레드에 대한 자세한 내용은 14장을 봐라.)
+
+당신은 다른 타입의 객체를 참조하기 위해 오브젝트 타입의 변수를 사용할 수 있다:
+
+`Object obj = new Employee("Harry Hacker", 35000);`
+
+물론, 오브젝트 타입의 변수는 오직 임의 변수를 위한 제네릭 홀더로서 유용하다.
+그 값으로 특정하기 위해서는, 당신은 오리지널 타입에 대해 몇 가지 지식을 가지고 캐스트를 적용해야 한다.
+
+`Employee e = (Employee) obj;`
+
+자바에서, 오직 원시 타입(숫자, 문자, 그리고 boolean 값)의 값은 객체가 아니다.
+
+모든 배열 타입은, 그들이 오브젝트의 배열이거나 원시타입의 배열이던지 간에, 오브젝트 클래스를 상속받는 클래스 타입이다.
+
+```
+Employee[] staff = new Employee[10];
+obj = staff;    // OK
+obj = new int[10];  // OK
+```
+
+```
+C++ 필기 : C++에서, 우주의 뿌리 클래스는 없다.
+그러나, 모든 포인터는 void* 포인터로 변환될 수 없다.
+```
+
+#### **5-2-1 The equals Method**
+
+Object 클래스에서 equals 메소드는 한 객체가 다른 객체와 동등하게 여겨지는지 테스트한다.
+Object 클래스에서 구현되는 equals 메소드는 두 객체 참조가 동일한지 결정한다.
+이것은 꽤 합리적인 디폴트이다 - 만약 두 객체가 동일하다면, 그들은 확실히 동일해야 한다.
+꽤 많은 클래스에서, 어떤 것도 요구되지 않는다.
+예를 들면, 동일성을 위해 두 PrintStream 객체를 비교하는 것은 의미가 없다.
+그러나, 당신은 두 객체가 같은 상태를 가지고 있을 때 그들이 동등하게 여겨지는 state-based equality testing을 구현하는 것을 종종 원할 것이다.
+
+예를 들면, 만약 그들이 같은 name, salary, hire date를 가지고 있다면, 두 employee가 동등하다고 여겨보자. (실제 employee database에서, 대신에 ID를 비교하는 것이 더 합리적일 것이다. 우리는 equals 메소드를 구현하는 방법를 논증하는 이 예시를 사용한다.)
+
+```
+public class Employee
+{
+    ...
+    public boolean equals(Object otherObject)
+    {
+        // a quick test to see if the objects are identical
+        if (this == otherObject) return true;
+
+        // must return false if the explicit parameter is null
+        if (otherObject == null) return false;
+
+        // if the classes don't match, they can't be equal
+        if (getClass() != otherObject.getClass())
+            return false;
+
+        // now we know otherObject is a non-null Employee
+        Employee other = (Employee) otherObject;
+
+        // test whether the fields have identical values
+        return name.equals(other.name) && salary == other.salary && hireDay.equals(other.hireDay);
+    }
+}
+```
+
+getClass 메소드는 한 객체의 클래스를 반환한다 - 우리는 이 장 뒷부분에서 이 메소드를 자세하게 논의한다.
+이 테스트에서, 두 객체는 그들이 같은 클래스에 속할 때 동등할 수 있다.
+
+```
+팁 : name 또는 hireDay가 null인 가능성을 막기 위해, Objects.equals 메소드를 사용해라.
+Objects.equals(a, b) 호출은 만약 두 인수가 null이라면 true를 반환하고, 하나만 null이면 false를 반환하고, 그렇지 않으면 a.equlas(b)를 호출한다.
+그 메소드와 함께, Employee.equals 메소드의 마지막 문장은
+    
+    return Objects.equals(name, other.name) && salary == other.salary && Object.equals(hireDay, other.hireDay);
+
+이 된다.
+```
+
+당신이 서브클래스를 위해 equals 메소드를 정의할 때, 처음으로 슈퍼클래스에서 equals를 호출해라.
+만약 테스트가 통과하지 않는다면, 그 객체들은 동등할 수 없다.
+만약 슈퍼클래스 필드들이 동등하다면, 당신은 서브클래스의 인스턴스 필드들을 비교 할 준비를 한다.
+
+```
+public class Manager extends Employee
+{
+    ...
+    public boolean equals(Object otherObject)
+    {
+        if (!super.equals(otherObject)) return false;
+        // super.equals checked that this and otherObject belong to the same class
+        Manager other = (Manager) otherObject;
+        return bonus == other.bonus;
+    }
+}
+```
