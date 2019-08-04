@@ -786,8 +786,10 @@ Figure 5.2 는 이 클래스 사이의 상속 관계를 보여준다.
 student와 employee 둘다 이름을 가지고 있고, 공통 슈퍼클래스는 우리에게 getName메소드를 상속 계층에서 높은 계층으로 뽑아내라고 한다.
 
 이제 또 다른 메소드 getDescription을 추가해보자. 이 메소드의 목적은
+
     an employee with a salary of $50,000.00
     a student majoring in computer science
+
 와 같은 사람의 짧은 묘사를 반환하는 것이다.
 
 ```
@@ -844,7 +846,7 @@ Person클래스는 person에 대해 이름 이외에 어떤 것도 알지 못한
 
 추상메소드는 서브클래스에서 구현된 메소드를 위해 플레이스 홀더로서 역할을 한다.
 당신이 추상클래스를 상속할 때, 당신은 두 가지 선택권을 가지고 있다.
-당신은 몇몇 또는 모든 정의되지 않은 추상메소드를 남길 수 있다; 그러면 당신은 서브클래스를 더 추상적으로? 태그해야 한다.
+당신은 일부 또는 모든 추상메소드를 정의되지 않은 채로 둘 수 있다; 그러면 당신은 서브클래스를 더 추상적으로 태그해야 한다.
 또는 당신은 모든 메소드를 정의할 수 있고, 서브클래스는 더 이상 추상적이지 않다.
 
 예를 들면, 우리는 Person클래스를 상속받고 getDescription메소드를 구현한 Student클래스를 정의할 것이다.
@@ -853,15 +855,19 @@ Student클래스의 메소드는 추상적이 아니여서, 추상클래스로�
 클래스는 추상메소드를 가지고 있지 않더라도 abstract로서 선언될 수 있다.
 
 추상클래스는 인스턴스화 될 수 없다.
-만약 클래스가 abstract로서 선언된다면, 그것은 생성된 클래스의 객체가 아니다.
+만약 클래스가 abstract로 선언된다면, 그것은 생성된 클래스의 객체가 아니다.
 예를 들면,
+
     new Person("Vince Vu")
+
 는 오류이다.
 그러나 당신은 구체적인 서브클래스의 객체를 생성할 수 있다.
 추상클래스의 object variables를 생성할 수 있다는 것을 명심해라.
 그러나 각 변수는 추상적이지 않은 서브클래스의 객체를 참조하여야 한다.
 예를 들면,
+
     Person p = new Student("Vince Vu", "Economics");
+
 여기 p는 비추상적인 서브클래스 Student의 인스턴스를 참조한 Person 추상적 타입의 변수이다.
 
 ```
@@ -874,7 +880,7 @@ class Person // C++
         ...
 };
 
-C++ 클래스는 적어도 하나의 순수 가상 함수를 가지고 있다면  추상적이다.
+C++ 클래스는 적어도 하나의 순수 가상 함수를 가지고 있다면 추상적이다.
 C++에서 추상클래스를 의미하는 특별한 키워드가 없다.
 ```
 
@@ -899,7 +905,7 @@ C++에서 추상클래스를 의미하는 특별한 키워드가 없다.
 Student 클래스는 getDescription 메소드를 정의한다.
 그러므로, Student 클래스 안의 모든 메소드는 구체적이고, 그 클래스는 이미 추상클래스가 아니다.
 
-Listing 5.4에서 보여지는 프로그램은 추상클래스 Person과 두 개의 구체적인 , Employee와 Student 클래스를 정의한다.
+Listing 5.4에서 보여지는 프로그램은 추상클래스 Person (Listing 5.5)과 두 개의 구체적인 서브클래스, Employee (Listing 5.6)와 Student (Listing 5.7)를 정의한다.
 우리는 employee와 student 객체와 함께 Person 참조의 배열을 채운다:
 
     Person[] people = new Person[2];
@@ -911,17 +917,18 @@ Listing 5.4에서 보여지는 프로그램은 추상클래스 Person과 두 개
     for(Person p : people)
         System.out.println(p.getName() + ", " + p.getDescription());
 
-몇몇 사람들은 p.getDescription() 호출에 의해 당혹스러워 한다.
+몇몇 사람들은 `p.getDescription()` 호출에 의해 당혹스러워 한다.
 이 호출이 정의되지 않은 메소드가 아닌가?
-Person 추상클래스의 객체를 생성하는 것이 불가능하기 떄문에 변수 p가 Person객체 결코 참조하지 않는다는 것을 명심해라.
+Person 추상클래스의 객체를 생성하는 것이 불가능하기 떄문에 변수 p가 Person객체를 결코 참조하지 않는다는 것을 명심해라.
 변수 p는 항상 Employee 또는 Student와 같은 구체적인 서브클래스의 객체를 참조한다.
+이 객체의 경우, getDescription 메소드가 정의된다.
 
 당신은 Employee와 Student 서브클래스에서 getDescription메소드를 간단히 정의한, Person 슈퍼클래스로부터 완전히 추상메소드를 생략할수 있었나?
-만약 당신이 그렇게 했다면, 변수 p에서 getDescription메소드를 호출할 수 없을것이다.
-컴파일러는 당신이 오직 클래스에서 선언된 메소드를 호출한다는 것을 지지한다.
+만약 당신이 그렇게 했다면, 변수 p에서 getDescription메소드를 호출할 수 없을 것이다.
+컴파일러는 당신이 오직 클래스 안에 선언된 메소드를 호출한다는 것을 지지한다.
 
 추상메소드는 자바 프로그래밍 언어에서 중요한 개념이다.
-당신은 인터페이스안에서 그들을 가장 흔히 마주칠 것이다.
+당신은 인터페이스에서 그들을 가장 흔하게 마주칠 것이다.
 인터페이스에 대한 더 많은 정보를 위해, 6장으로 가라.
 
 ```
@@ -930,10 +937,10 @@ Listing 5.4 abstractClasses/PersonTest.java
 package abstractClasses;
 
 /**
-    * This program demonstrates abstract classes.
-    * @version 1.01 2004-02-21
-    * @author Cay Horstmann
-    */
+ * This program demonstrates abstract classes.
+ * @version 1.01 2004-02-21
+ * @author Cay Horstmann
+ */
 public class PersonTest
 {
     public static void main(String[] args)
@@ -1025,9 +1032,9 @@ public class Student extends Person
     private String major;
 
     /**
-        * @param name the student's name
-        * @param major the student's major
-        */
+     * @param name the student's name
+     * @param major the student's major
+     */
     public Student(String name, String major)
     {
         // pass n to superclass constructor
